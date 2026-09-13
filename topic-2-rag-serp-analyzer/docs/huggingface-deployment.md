@@ -131,6 +131,15 @@ is large — same as it was locally/in Colab). Once it says **Running**:
 - **Build fails** — check the Logs tab first. Common causes: a typo in
   `requirements.txt`, or the SDK wasn't set to "gradio" when creating the
   Space.
+- **Build fails with a `pydantic` version conflict** (`ResolutionImpossible`,
+  naming `gradio[mcp,oauth]` and `spaces`) — hit this for real on the first
+  deploy attempt. Every Gradio Space auto-installs
+  `gradio[oauth,mcp]==<sdk_version>` and `spaces` alongside your
+  `requirements.txt`, and gradio's `mcp` extra pins `pydantic<=2.12.5`. If
+  `requirements.txt` ever gets a `pydantic>=2.13` (or higher) floor again,
+  it will conflict with that ceiling and fail the build outright — keep the
+  floor at `pydantic>=2.0.0` (all this code needs) unless you've re-checked
+  it against gradio's current `mcp`-extra pin first.
 - **App loads but errors on "Generate"** — almost always a missing or
   placeholder secret; the error message from `app.py`'s `gr.Error` wrapping
   will name what's wrong (e.g. a specific missing `AZURE_OPENAI_*` value)
