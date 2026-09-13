@@ -13,7 +13,7 @@ budget without one.
 | Requirements categorized | ✅ `docs/problem-statement-categorized.md` (B1-B19) |
 | Component specs + prompts (`build-topic-executables`) | ✅ `docs/component-specs.md`, `prompts/planner.md`, `prompts/auditor.md` |
 | `src/` implementation | ✅ real `langgraph.StateGraph`, async Azure OpenAI calls, retry/backoff (B19), schema-validated agent output |
-| Colab notebook | ✅ `topic4_end_to_end_colab.ipynb` — 27 cells, executed end-to-end (Fixture backend) as part of building it, not just syntax-checked |
+| Colab notebook | ✅ `topic4_end_to_end_colab.ipynb` — 25 cells, executed end-to-end (Fixture backend) as part of building it, not just syntax-checked |
 | Real run against Azure OpenAI | ⬜ Not started — needs you |
 | Postmortem | ⬜ Not started — write from the real run |
 

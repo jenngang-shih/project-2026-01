@@ -20,6 +20,18 @@ from the library's own introspection (`get_graph().draw_mermaid()`) rather
 than a hand-drawn diagram that could silently drift from what the code
 actually does.
 
+**Found during review, before any live run** (caught by the project owner
+reading the generated notebook, not by executing it): the notebook
+generator's first draft split "Shared imports" and "Credentials" into two
+separate cells, imports second — but the Credentials cell's secrets-loading
+loop uses `os` and `userdata`, both only defined in the *next* cell. Run
+top-to-bottom, the Credentials cell would `NameError` before the imports
+cell ever executed. Fixed by merging both into one cell (imports first,
+then the secrets loop), matching topics 1-2's actual notebooks, which
+already do this for exactly this reason. Re-verified by actually executing
+the merged cell (with a stubbed `userdata.get`) as part of the notebook's
+full end-to-end execution check, not just re-reading the fix by eye.
+
 **New engineering defaults, flagged rather than silently picked:**
 
 1. **`max_iterations = 5`** — B15 requires a cap but names no number.
