@@ -56,9 +56,12 @@ cp .env.example .env  # then fill in real values; .env is gitignored
   fine-tuned on 8 held-out rows, and an Audit Report (B16) + Reflection
   (B18) written from that run's actual output — see
   `topic-3-local-llm-seo-diagnostics/README.md` for the full index.
-- **Topic 4** — requirements categorized
-  (`docs/problem-statement-categorized.md`), scaffolding only otherwise
-  (empty `src/`, stub README).
+- **Topic 4** — built: a real `langgraph.StateGraph` (Planner/Auditor
+  negotiation loop, Azure OpenAI backend chosen over an old stale note
+  suggesting a local Llama model), `src/` implementation, and a Colab
+  notebook executed end-to-end (Fixture backend) as part of building it.
+  Real run against live Azure OpenAI still needed — see
+  `topic-4-multi-agent-conflict-resolution/README.md`.
 
 Build order follows `docs/architecture.md`'s suggested pipeline: Topic 1 → Topic 2 →
 Topic 3 → Topic 4.

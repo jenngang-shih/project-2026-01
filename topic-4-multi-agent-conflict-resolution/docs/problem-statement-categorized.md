@@ -25,6 +25,39 @@ Traceability:
   setup) are treated as Reference: they describe a fixed test fixture the
   system must be run against, not an action to perform.
 
+**Backend decision, asked rather than silently picked**: `docs/architecture.md`
+had a stale, pre-topic-1 note — "Topic 4 uses LangGraph with a Llama-based
+model (decided; exact model/runtime TBD)" — that conflicted with what's
+actually been proven out since (Azure OpenAI in topics 1-2; a local
+fine-tuned Llama-3-8B in topic 3, GPU/Colab-dependent). Asked the project
+owner directly; **Azure OpenAI for both Agent A and Agent B**, consistent
+with topics 1-2, no GPU dependency for this topic. `docs/architecture.md`'s
+note is superseded by this decision.
+
+**Real finding, checked before building anything**: `data/Manual.txt`
+(the "company's internal manual" B5 references) turns out to be **entirely
+mortgage/interest-rate-specific** — its 3 rules require an
+"individual-credit-conditions-apply" disclaimer on interest-rate claims,
+require disclosing the bank-vs-private-lender legal distinction, and ban
+"guaranteed approval"/"lowest rate nationwide" language. **It contains no
+casino-related rule at all** — not "穩賺不賠", not "保證出金", not anything
+resembling B10's forced-conflict phrases. So B10's specific forbidden-term
+list is not derivable from Manual.txt; it's used here as its own explicit
+fixture rule (as B10 itself already states — "the Compliance Auditor's
+rules strictly forbid such terms"), not something invented independently or
+force-fit from a document that doesn't cover this content category. Manual.txt
+is still loaded as Agent B's general-purpose compliance reference (so a
+mortgage-content run would be governed by its real rules too), just not the
+source of this specific test scenario's conflict.
+
+**Design decision, flagged**: Manual.txt is loaded as **static text directly
+in Agent B's prompt**, not retrieved via topic 2's ChromaDB/RAG pipeline.
+Topic 2's own postmortem already named why: at 3 lines total, real
+retrieval has no discrimination to perform (`top_k` would always return
+everything) — reusing that machinery here would add complexity without
+adding any real capability, not a shortcut around a requirement that
+actually calls for retrieval.
+
 ## Role
 | ID | Statement |
 |----|-----------|
