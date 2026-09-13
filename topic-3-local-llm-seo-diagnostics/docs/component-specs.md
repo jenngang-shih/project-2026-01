@@ -20,6 +20,19 @@ this is built directly as a Colab notebook, not generated from source files.
 `problem-statement-categorized.md`'s run notes, restated here for
 traceability): Colab/T4, not Kaggle Kernels (B3, B15); Llama-3-8B-Instruct.
 
+**Found during the first live run** (not visible in the local torch-free
+verification, same pattern as topics 1-2's own live-run findings):
+`tokenizer.apply_chat_template(..., return_tensors="pt")` without
+`return_dict=True` doesn't reliably return a bare tensor — in the
+`transformers` version Colab actually installed (only a loose
+`>=4.43.0` floor was pinned), it returned a dict-like `BatchEncoding`
+instead, and code written assuming a bare tensor's `.shape` attribute
+failed with a confusing `AttributeError` two exception layers removed
+from the actual cause. Fixed in both call sites
+(`generate_diagnosis`, `build_training_example`) by always passing
+`return_dict=True` and pulling `input_ids`/`attention_mask` out by name —
+unambiguous regardless of which version's default behavior applies.
+
 **New engineering defaults, flagged rather than silently picked** (same
 convention as every prior default in this project):
 
