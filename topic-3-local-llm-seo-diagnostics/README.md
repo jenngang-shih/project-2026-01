@@ -12,9 +12,9 @@ including catching deliberately planted false SEO theories in the test data.
 | Requirements categorized | ✅ `docs/problem-statement-categorized.md` (B1-B21) |
 | Train/held-out split + gold labels | ✅ `docs/data-split-and-labels.md`, `data/split_and_gold_labels.json` |
 | Component specs + prompt (`build-topic-executables`) | ✅ `docs/component-specs.md`, `prompts/seo-diagnostic-audit.md` |
-| Colab notebook (Phase A + Phase B) | ✅ `topic3_end_to_end_colab.ipynb` — 27 cells; torch-free logic (data, prompt rendering, JSON validation) verified locally; model/training/generation cells not yet run (need GPU + accepted Llama-3 license) |
-| Real run on Colab T4 | ⬜ Not started — needs you |
-| Audit Report (B16), Reflection (B18) | ⬜ Not started — write these from the real run's output |
+| Colab notebook (Phase A + Phase B) | ✅ `topic3_end_to_end_colab.ipynb` — 27 cells; two real bugs found and fixed on the first live run (see `docs/component-specs.md` run notes) |
+| Real run on Colab T4 | ✅ `docs/topic3_end_to_end_colab_completed-run.ipynb`, `docs/topic3_report.html`, `docs/topic3_results.csv` — QLoRA fine-tune (loss 2.51→1.99→1.62) + 48 base-vs-fine-tuned diagnostic calls on the 8 held-out rows |
+| Audit Report (B16), Reflection (B18) | ✅ `docs/audit-report.md`, `docs/reflection.md` — written from the real run's actual output, including where fine-tuning did and didn't help |
 
 ## Platform/model exception
 
@@ -49,10 +49,24 @@ training gold labels. Full methodology, including a real finding (4 planted
 false-theory rows exist, not the 1 named in the source) in
 `docs/data-split-and-labels.md`.
 
+## Real run results
+
+The fine-tune generalized on the sharpest test available: rows 13 and 19
+(held out) plant *different* false SEO theories than the two the model
+trained on, and the fine-tuned variant correctly named the specific
+counter-fact for both, consistently across all 3 temperatures — evidence
+against pure memorization of the 12 training examples, not proof it holds
+at scale. Base's most reproducible weakness was a fixed "keyword stuffing"
+critique template applied even to content without that pattern, including
+one literal self-contradiction on identical input (row 20, 60 vs. 85
+across two temperatures). JSON structural compliance (B21) came in at
+89.6% (43/48), not the idealized 100%. Full detail, all scores, and
+verbatim quoted model output: `docs/audit-report.md`;
+what this says about the local model and about B18's own "prompt design"
+framing: `docs/reflection.md`.
+
 ## What's left
 
-1. Run the notebook on Colab (T4 GPU, `HF_TOKEN` secret, Llama-3 license
-   accepted) — the one real live-verification step remaining.
-2. Write the Audit Report (B16) and Reflection (B18) from the actual
-   output — including an honest account if the fine-tune's small training
-   set (12 examples) shows real overfitting, not just the cases where it helps.
+Nothing outstanding for this topic's own deliverables. The LoRA adapter
+weights (`docs/llama3-seo-audit-adapter/`, ~53MB) are gitignored —
+reproducible by re-running the notebook's fine-tune cell, not versioned.

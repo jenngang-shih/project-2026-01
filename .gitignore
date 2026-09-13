@@ -9,3 +9,6 @@ venv/
 /models/
 .sessions/
 .chroma/
+
+# LoRA adapter weights (~50MB+ binary) -- reproducible from the notebook + gold labels, not versioned
+topic-3-local-llm-seo-diagnostics/docs/llama3-seo-audit-adapter/

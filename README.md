@@ -49,11 +49,13 @@ cp .env.example .env  # then fill in real values; .env is gitignored
   are closed — see `topic-2-rag-serp-analyzer/README.md` for the full index,
   and `docs/postmortem-topic-2.md` for what worked, what didn't, and what's
   reusable for topics 3-4.
-- **Topic 3** — specced and a full Colab notebook built (QLoRA fine-tune of
-  Llama-3-8B-Instruct + batch diagnostics), on Colab/T4 instead of Kaggle
-  Kernels (a flagged exception, not silent). Torch-free logic verified
-  locally; the model/training cells still need a real run — see
-  `topic-3-local-llm-seo-diagnostics/README.md`.
+- **Topic 3** — built and evidence-backed: QLoRA fine-tune of
+  Llama-3-8B-Instruct on Colab/T4 (a flagged exception to Kaggle, not
+  silent), a real completed run (`topic-3-local-llm-seo-diagnostics/docs/
+  topic3_end_to_end_colab_completed-run.ipynb`) comparing base vs.
+  fine-tuned on 8 held-out rows, and an Audit Report (B16) + Reflection
+  (B18) written from that run's actual output — see
+  `topic-3-local-llm-seo-diagnostics/README.md` for the full index.
 - **Topic 4** — requirements categorized
   (`docs/problem-statement-categorized.md`), scaffolding only otherwise
   (empty `src/`, stub README).
