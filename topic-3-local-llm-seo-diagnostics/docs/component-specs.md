@@ -33,6 +33,23 @@ from the actual cause. Fixed in both call sites
 `return_dict=True` and pulling `input_ids`/`attention_mask` out by name —
 unambiguous regardless of which version's default behavior applies.
 
+**Also found during the first live run**: the training loop
+(T3) hit `CUDA out of memory` partway through the first epoch on a T4
+(14.56 GiB total), not at model-load time — the notebook attached LoRA
+via `get_peft_model` directly on the 4-bit base model without first
+calling `prepare_model_for_kbit_training`. That call isn't just
+boilerplate: it casts norm layers to fp32 for training stability, calls
+`enable_input_require_grads()` (needed for gradients to reach the LoRA
+adapters through frozen, checkpointed input embeddings), and — via
+`use_gradient_checkpointing=True` — turns on activation checkpointing.
+Without it, backward has to hold full activations for all 32 transformer
+layers of an 8B model, which reliably exceeds a T4's 15GB even though the
+4-bit weights themselves only take ~6GB. Fixed by calling
+`prepare_model_for_kbit_training(base_model, use_gradient_checkpointing=True)`
+before `get_peft_model`, setting `model.config.use_cache = False` during
+training (required alongside gradient checkpointing — the two are mutually
+exclusive) and back to `True` after, for fast generation in Phase B.
+
 **New engineering defaults, flagged rather than silently picked** (same
 convention as every prior default in this project):
 
