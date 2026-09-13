@@ -29,9 +29,12 @@ passages, and the final proposal, each in its own tab. No new logic beyond
 2. **Owner**: your account
 3. **Space name**: whatever you want (e.g. `rag-serp-analyzer`)
 4. **SDK**: select **Gradio**
-5. **Space hardware**: the free "CPU basic" tier is enough — the actual
-   model inference happens on Azure, this Space just runs a lightweight
-   Python web server
+5. **Space hardware**: pick **CPU basic** (free tier) specifically —
+   **not ZeroGPU or any GPU tier**. All the actual model inference happens
+   on Azure over the network; `app.py` does no local inference and has no
+   `@spaces.GPU`-decorated function, so a GPU/ZeroGPU tier will fail at
+   startup expecting one that doesn't exist (see Troubleshooting below —
+   this happened on the first real deploy attempt).
 6. **Visibility**: read the note below before choosing, then click **Create Space**
 
 > **Keep it Private unless you specifically want it public.** This Space
@@ -151,3 +154,9 @@ is large — same as it was locally/in Colab). Once it says **Running**:
 - **Data not found** — confirms the `data/` folder wasn't uploaded to the
   Space, or was uploaded at the wrong path (`app.py` expects it directly
   alongside `app.py`, i.e. `<space-root>/data/`, not nested further).
+- **Runtime error: "No @spaces.GPU function detected during startup"** —
+  hit this for real on the first deploy. Means the Space's hardware is set
+  to a GPU/ZeroGPU tier, which requires at least one function decorated
+  with `@spaces.GPU`; `app.py` has none and needs none, since every actual
+  model call goes to Azure over the network, not local inference. Fix:
+  **Settings → Space hardware → CPU basic**, then let it rebuild.
