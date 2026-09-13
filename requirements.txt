@@ -1,0 +1,18 @@
+# Core
+python-dotenv>=1.0.0
+pydantic>=2.0.0
+
+# LLM / Agent
+anthropic>=0.40.0
+openai>=1.40.0  # Azure OpenAI backend (topic-1 --backend azure) — uses openai.AzureOpenAI
+
+# RAG (topic-2) — LLM/embeddings via the existing openai package (AzureOpenAI,
+# above); chromadb is the vector store (component-specs.md's C3/C4)
+chromadb>=0.5.0
+
+# Local LLM (topic-3) — add local runtime client once elaboration is provided
+# e.g. ollama
+
+# Utilities
+requests>=2.31.0
+markdown>=3.5

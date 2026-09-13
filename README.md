@@ -1,0 +1,50 @@
+# SEOFUN AI/SEO Assessment — 2026-01
+
+Four independently-runnable AI/SEO prototypes built against `docs/problem-statement.md`.
+See `docs/architecture.md` for how they relate and `prompts/project-construction-meta-prompt.md`
+for the template used to write up the final execution narrative once each topic has
+real, evidence-backed results to report — not a build plan itself; see
+`docs/postmortem-topic-1.md` for why.
+
+## Topics
+1. [`topic-1-prompt-chaining`](./topic-1-prompt-chaining/README.md) — Micro-intent
+   modeling → first-hand-experience simulation → EEAT/YMYL self-audit prompt chain.
+2. [`topic-2-rag-serp-analyzer`](./topic-2-rag-serp-analyzer/README.md) — SERP Analyzer
+   skill + RAG over the internal writing manual, full-stack demo.
+3. [`topic-3-local-llm-seo-diagnostics`](./topic-3-local-llm-seo-diagnostics/README.md) —
+   Local LLM (Kaggle) SEO content auditor with JSON-structured scoring.
+4. [`topic-4-multi-agent-conflict-resolution`](./topic-4-multi-agent-conflict-resolution/README.md) —
+   LangGraph Planner/Auditor negotiation loop for traffic-vs-compliance conflicts.
+
+## Data
+Shared fixtures used across topics live in [`data/`](./data):
+- `SERP_Data.json` — simulated SERP results for topic 2's Content Gap analysis.
+- `Manual.txt` — internal writing/compliance manual, used for RAG (topic 2) and as the
+  compliance rules the Auditor agent enforces (topic 4).
+- `SEO 診斷測試數據樣本.csv` — 20 labeled content snippets (12 for training/tuning,
+  8 held out for audit) for topic 3, including deliberately planted SEO
+  misinformation and keyword-stuffing examples.
+
+## Setup
+```bash
+python -m venv .venv
+source .venv/bin/activate  # or .venv\Scripts\activate on Windows
+pip install -r requirements.txt
+cp .env.example .env  # then fill in real values; .env is gitignored
+```
+
+## Status
+- **Topic 1** — built and evidence-backed: deterministic orchestrator + prompts,
+  a fixture run, an in-session live-generated run, and a real Azure OpenAI live
+  run; all sourced deliverables (B4, B16-B19) closed. See
+  `topic-1-prompt-chaining/README.md` for the full index, and
+  `docs/postmortem-topic-1.md` for what's reusable from it.
+- **Topic 2** — requirements categorized, component specs + dynamic prompts
+  written (`topic-2-rag-serp-analyzer/docs/component-specs.md`); backend is
+  Azure OpenAI + ChromaDB. Code (`src/`) not yet written.
+- **Topics 3-4** — requirements categorized
+  (`docs/problem-statement-categorized.md` exists in each), scaffolding only
+  otherwise (empty `src/`, stub READMEs).
+
+Build order follows `docs/architecture.md`'s suggested pipeline: Topic 1 → Topic 2 →
+Topic 3 → Topic 4.

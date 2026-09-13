@@ -1,0 +1,24 @@
+{
+  "intents": [
+    {
+      "intent": "出金速度與撥款可靠性焦慮 (withdrawal-speed & payout-reliability anxiety)",
+      "evidence": "Searchers using the bare head keyword [娛樂城] are almost always pre-deposit or already-depositing users, not first-time browsers — the term itself carries no informational qualifier (unlike '娛樂城推薦' or '娛樂城教學'), which means the searcher already knows what the product is and is filtering for one specific worry: will my money actually come back out, and how fast. That worry is structural to the category (offshore/unlicensed operators, no consumer-protection recourse), not incidental.",
+      "competitive_rationale": "Most ranking pages in this space are affiliate comparison lists optimized for breadth — they list bonuses, licenses, and game catalogs across many platforms, which forces withdrawal-speed claims into a single generic bullet ('快速出金') repeated per platform with no substantiating detail. A page that treats this as its central intent (concrete timing ranges by payment method, what actually delays a payout, how to escalate a stuck withdrawal) is competing on depth that a breadth-optimized comparison page structurally cannot match without diluting its list format."
+    },
+    {
+      "intent": "特定代理商/平台真實性查核 (verifying a specific agent or platform's legitimacy)",
+      "evidence": "A large share of entry into this category comes through referral — a friend, a LINE group, an ad for one named platform — not organic discovery of 'which platform is best.' Once someone has a specific name in hand, their query intent shifts from comparison to verification: is *this one* legitimate, not which one is best.",
+      "competitive_rationale": "Comparison-list content is built around presenting multiple options side by side, which structurally cannot deeply verify any single one — it's the wrong content shape for a verification query. A page built specifically to teach the verification process itself (what a real license reference looks like, common impersonation patterns, how to check a domain/company registration) serves a distinct, narrower, and lower-competition intent that the dominant comparison-list format doesn't naturally produce."
+    },
+    {
+      "intent": "遊戲介面沉浸感與跨裝置操作體驗需求 (game-UI immersion and cross-device usability)",
+      "evidence": "This is the example the task itself names, and it holds up under scrutiny: once withdrawal-trust and legitimacy are settled, the remaining differentiator between platforms a user has already vetted is the actual play experience — load times, mobile layout, live-dealer video stability — which is a repeat-usage concern, not an acquisition-stage one.",
+      "competitive_rationale": "Ranking content in this space is written by SEO/affiliate teams whose incentive is comparing commission terms and bonus structure, not describing hands-on interface texture, because that requires actual sustained play rather than published spec sheets. That makes it one of the few sub-intents where genuinely first-hand, detail-rich content has a structural information advantage over affiliate-authored comparison content, rather than just a stylistic one."
+    },
+    {
+      "intent": "法律灰色地帶與個人風險曝露焦慮 (legal-exposure/YMYL anxiety)",
+      "evidence": "[娛樂城] operates in a legal gray zone in Taiwan; a rational searcher moving real money through it has a background worry distinct from gameplay or bonuses — whether participating exposes them personally to legal or financial risk (bank flags, traceability, liability) — a worry that a purely product-comparison mindset doesn't address at all.",
+      "competitive_rationale": "This is the most YMYL-sensitive of the four intents and the one existing affiliate content has the strongest incentive to avoid, since honestly discussing legal risk cuts against the conversion goal of most ranking pages. That avoidance is itself the content gap: a page willing to address the legal-risk question directly and honestly is differentiating on trustworthiness in a category where trustworthiness signals are otherwise almost entirely absent — directly serving this topic's EEAT/YMYL requirement rather than just its click-through goal."
+    }
+  ]
+}

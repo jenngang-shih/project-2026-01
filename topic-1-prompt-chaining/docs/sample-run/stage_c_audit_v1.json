@@ -1,0 +1,11 @@
+{
+  "pass": false,
+  "reasons": [
+    "The sentence '說真的，這幾家平台目前應該是市面上做得最好的，介面順到幾乎沒什麼好挑剔' asserts an unqualified market-wide superlative ('做得最好的') without stating how many platforms were actually compared or on what basis — this is an unverifiable authority claim, not a first-hand observation, and it breaks the paragraph's otherwise credible hands-on voice by reading as promotional copy.",
+    "That specific claim is also mildly YMYL-relevant: a reader could treat 'best in the market' as a basis for choosing where to deposit money, when the actual evidence given only supports a narrower, personal claim ('smoother than others I've personally tried')."
+  ],
+  "authoritativeness_suggestions": [
+    "Rescope the claim to what a single player can actually know first-hand — e.g. 'smoother than the others I've personally tried' rather than a market-wide ranking.",
+    "Keep the rest of the paragraph as-is; the sensory detail (video load lag, touch responsiveness, button spacing) and the closing YMYL-conscious reminder are both concrete and appropriately hedged already."
+  ]
+}
