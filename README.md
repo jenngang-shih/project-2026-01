@@ -6,6 +6,8 @@ for the template used to write up the final execution narrative once each topic 
 real, evidence-backed results to report — not a build plan itself; see
 `docs/postmortem-topic-1.md` for why.
 
+**Repository:** https://github.com/jenngang-shih/project-2026-01
+
 ## Topics
 1. [`topic-1-prompt-chaining`](./topic-1-prompt-chaining/README.md) — Micro-intent
    modeling → first-hand-experience simulation → EEAT/YMYL self-audit prompt chain.
@@ -39,9 +41,12 @@ cp .env.example .env  # then fill in real values; .env is gitignored
   run; all sourced deliverables (B4, B16-B19) closed. See
   `topic-1-prompt-chaining/README.md` for the full index, and
   `docs/postmortem-topic-1.md` for what's reusable from it.
-- **Topic 2** — requirements categorized, component specs + dynamic prompts
-  written (`topic-2-rag-serp-analyzer/docs/component-specs.md`); backend is
-  Azure OpenAI + ChromaDB. Code (`src/`) not yet written.
+- **Topic 2** — built and evidence-backed: deterministic orchestrator + prompts
+  (Azure OpenAI + ChromaDB backend), verified against real project data, a
+  real Azure live run (`topic-2-rag-serp-analyzer/docs/live-run.md`), and a
+  Gradio frontend (`app.py`, deployable as a Hugging Face Space). All
+  sourced deliverables except B20 (demo video, needs direct human action)
+  are closed — see `topic-2-rag-serp-analyzer/README.md` for the full index.
 - **Topics 3-4** — requirements categorized
   (`docs/problem-statement-categorized.md` exists in each), scaffolding only
   otherwise (empty `src/`, stub READMEs).

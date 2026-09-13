@@ -142,8 +142,8 @@ notebook access to each, and run all cells top to bottom.
 | B23 (scalability) | ✅ `docs/component-specs.md`'s "Scalability" section |
 | B12 (coding-agent process documented) | ✅ `docs/coding-agent-process.md` |
 | **B3/B14 — real frontend** | ✅ `app.py` — Gradio UI, deployable as a Hugging Face Space (verified locally: imports, builds, runs against Fixture clients, error paths surface correctly) |
-| **B19 — this README** | ✅ deploy/run instructions above, including the Space. **Still open: the "GitHub repository" half** — this project has never been `git init`'d, so there's no actual repo to host on GitHub yet, independent of how complete this file is. |
-| B20 (demo video) | ⬜ Not started |
+| **B19** | ✅ **Fully closed** — deploy/run instructions above, and the code is live at [github.com/jenngang-shih/project-2026-01](https://github.com/jenngang-shih/project-2026-01) |
+| B20 (demo video) | ⬜ Not started — the one remaining item across both built topics |
 
 ## Code (`src/`)
 
