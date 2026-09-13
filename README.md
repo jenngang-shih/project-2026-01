@@ -44,9 +44,11 @@ cp .env.example .env  # then fill in real values; .env is gitignored
 - **Topic 2** — built and evidence-backed: deterministic orchestrator + prompts
   (Azure OpenAI + ChromaDB backend), verified against real project data, a
   real Azure live run (`topic-2-rag-serp-analyzer/docs/live-run.md`), and a
-  Gradio frontend (`app.py`, deployable as a Hugging Face Space). All
+  Gradio frontend (`app.py`, deployed live as a Hugging Face Space). All
   sourced deliverables except B20 (demo video, needs direct human action)
-  are closed — see `topic-2-rag-serp-analyzer/README.md` for the full index.
+  are closed — see `topic-2-rag-serp-analyzer/README.md` for the full index,
+  and `docs/postmortem-topic-2.md` for what worked, what didn't, and what's
+  reusable for topics 3-4.
 - **Topics 3-4** — requirements categorized
   (`docs/problem-statement-categorized.md` exists in each), scaffolding only
   otherwise (empty `src/`, stub READMEs).

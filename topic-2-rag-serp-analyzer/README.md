@@ -205,6 +205,12 @@ undercounts near-variants (exact substring match only), and retrieval
 hasn't actually been tested for discrimination yet (only 3 manual chunks
 exist, so every query returns all of them).
 
+## Postmortem
+
+`../docs/postmortem-topic-2.md` — grade, what worked, what didn't, and
+what's directly reusable for topics 3-4 (project root, same convention as
+topic 1's postmortem).
+
 ## Data
 
 Shared fixtures at project root: `data/SERP_Data.json` (5 competitor
