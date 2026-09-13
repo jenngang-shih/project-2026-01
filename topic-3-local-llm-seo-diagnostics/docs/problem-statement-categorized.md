@@ -22,6 +22,19 @@ Traceability:
   (they describe required system behavior, not rules governing how it's done).
 - B16/B17 were split: the audit-report deliverable itself vs. the strict
   train/test-separation rule governing how it must be produced.
+- **Exception, explicitly requested rather than silently substituted**: B3
+  ("Deploy via Kaggle Kernels") and B15 ("A Kaggle Notebook...") both name
+  Kaggle specifically. Per the project owner's explicit direction, this
+  deploys on **Google Colab with a T4 GPU** instead — comparable free-tier
+  GPU capability (both offer a T4-class card suitable for an 8B model with
+  4-bit quantization + QLoRA), chosen for consistency with topics 1-2's
+  already-established Colab workflow rather than adding a third platform's
+  account setup. B3/B15 are not satisfied literally; this is a deliberate,
+  named exemption, not an oversight.
+- Model: **Llama-3-8B-Instruct** (one of B3's two named options). Gated on
+  Hugging Face — needs the project owner's own HF account to accept Meta's
+  license on the model page, plus an HF access token set as a Colab secret,
+  before the notebook can actually download the weights.
 
 ## Role
 | ID | Statement |
