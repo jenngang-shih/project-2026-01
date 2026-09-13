@@ -1,10 +1,18 @@
 # Self-contained requirements for deploying this folder as a standalone
 # Hugging Face Space (or running app.py anywhere) — the project root's
 # requirements.txt covers all four topics; this one only needs what
-# topic-2's src/ and app.py actually import. Versions pinned to what's
-# been verified working (see docs/live-run.md).
+# topic-2's src/ and app.py actually import.
+#
+# pydantic has no floor above 2.0 deliberately: every Gradio Space build
+# auto-installs gradio[oauth,mcp]==<sdk_version>, and gradio's own "mcp"
+# extra pins pydantic<=2.12.5 — a pydantic>=2.13.0 floor here (which was
+# only ever "whatever was installed locally when this was written," not an
+# actual requirement of this code) made pip's resolver fail outright on
+# Spaces. This code only needs BaseModel/Field/field_validator, all
+# present since pydantic 2.0 — don't raise this floor without checking it
+# against gradio's current mcp-extra pin first.
 python-dotenv>=1.2.0
-pydantic>=2.13.0
+pydantic>=2.0.0
 openai>=1.40.0
 chromadb>=0.5.0
 gradio>=6.0.0
