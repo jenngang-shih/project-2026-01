@@ -16,6 +16,26 @@ including catching deliberately planted false SEO theories in the test data.
 | Real run on Colab T4 | ✅ `docs/topic3_end_to_end_colab_completed-run.ipynb`, `docs/topic3_report.html`, `docs/topic3_results.csv` — QLoRA fine-tune (loss 2.51→1.99→1.62) + 48 base-vs-fine-tuned diagnostic calls on the 8 held-out rows |
 | Audit Report (B16), Reflection (B18) | ✅ `docs/audit-report.md`, `docs/reflection.md` — written from the real run's actual output, including where fine-tuning did and didn't help |
 
+Also see [`docs/lineage.md`](docs/lineage.md) for a node-by-node walkthrough
+(problem statement → split/labels → fine-tune, including the three real
+live-run bugs on the path → per-row results → report) suited to explaining
+this to someone who already knows the domain, and
+[`../docs/postmortem-topic-3.md`](../docs/postmortem-topic-3.md) for what
+worked, what didn't, and what's reusable for topic 4.
+
+For a non-technical audience, three companion pieces:
+- **["Show Your Work"](https://claude.ai/code/artifact/78ef724f-e31f-4668-a3c3-687672b3cebd)**
+  (Claude Artifact, private by default — share from the page itself) — a
+  13-slide click-through walkthrough, plain conversational language, no
+  domain or technical background assumed.
+- **[`Show Your Work.pptx`](Show%20Your%20Work.pptx)** — the same 13 slides
+  as a downloadable file, opens directly in Google Slides (File → Import
+  slides) or PowerPoint/Keynote.
+- **["Prove It First"](https://claude.ai/code/artifact/2b3effdc-707f-491e-945a-4965d30ff6aa)**
+  (Claude Artifact) and **[`One-Pager.pdf`](One-Pager.pdf)** — a one-page
+  written summary covering the same ground, for a reader who wants a
+  leave-behind rather than a live presentation.
+
 ## Platform/model exception
 
 B3/B15 name **Kaggle Kernels**; this deploys on **Colab with a T4 GPU**
