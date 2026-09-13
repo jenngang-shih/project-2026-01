@@ -93,14 +93,12 @@ the SERP analysis, retrieved manual passages, and proposal in separate
 tabs. Auto-ingests the manual on first use, so step 2 isn't required first.
 
 **Deploy it as a Hugging Face Space** (this is what makes it a genuine
-full-stack deployment, not just a local script): push this folder's
-contents to a new Space with SDK "gradio" — the `README.md` you're reading
-already has the required Space-configuration header at the top. Then, in
-the Space's **Settings → Repository secrets**, add the same five values as
-the Colab setup (`AZURE_OPENAI_API_KEY`, `AZURE_OPENAI_ENDPOINT`,
-`AZURE_OPENAI_API_VERSION`, `AZURE_OPENAI_DEPLOYMENT`,
-`AZURE_OPENAI_EMBEDDING_DEPLOYMENT`) — never commit these as a file. Two
-things worth knowing before deploying:
+full-stack deployment, not just a local script) — full step-by-step walkthrough
+in **[`docs/huggingface-deployment.md`](docs/huggingface-deployment.md)**.
+Short version: push this folder's contents plus a `data/` copy to a new
+Space with SDK "gradio" (the `README.md` you're reading already has the
+required Space-configuration header at the top), then set the same five
+secrets as the Colab setup. Two things worth knowing before deploying:
 - **Storage is ephemeral on the free tier**, same as Colab — `app.py`
   re-ingests the manual automatically on first use after every restart, so
   this doesn't need a manual step, just a few extra seconds on first load.
