@@ -198,14 +198,26 @@ capping the pip install to `transformers>=4.43.0,<5.0.0` — pinning the
 already-working dependency rather than waiting on the lagging one to
 catch up.
 
-**Still not fully live-verified**: the version-ceiling fix is confirmed
-correct (reproduced and fixed the exact ImportError locally). What remains
-unconfirmed is everything downstream that needs an actual GPU and the real
-8B model — whether `build_transformers_prefix_allowed_tokens_fn` behaves
-correctly against the real Llama-3-8B-Instruct tokenizer and the
-PEFT-wrapped, 4-bit model on a T4, and whether it measurably raises the
-89.6% compliance rate. Same category of thing as every other topic-3
-notebook change: the real test is the next live Colab run.
+**Verified one level deeper after the fix**: with `transformers==4.57.6`
+and `torch` installed locally, the actual mechanism — not just the imports
+— was exercised directly: `build_transformers_prefix_allowed_tokens_fn`
+built successfully against a real tokenizer (`gpt2`, chosen only because
+it's ungated and small — Llama-3's is gated), and calling the returned
+function on a real prompt's first token step correctly restricted the
+allowed vocabulary to exactly whitespace and JSON-object-opening tokens
+(`{`, `{"`, ` {`, newlines) — the expected behavior for a schema-constrained
+decoder at generation step zero. This confirms the constraint logic itself
+works correctly with this library/transformers combination, not just that
+the packages import cleanly.
+
+**Still not fully live-verified**: this used a generic tokenizer, not
+Llama-3-8B-Instruct's actual one, and no PEFT/4-bit-quantized model was
+involved (that needs a real GPU). Whether the same mechanism behaves
+identically against the real tokenizer and model on a T4, and whether it
+measurably raises the 89.6% compliance rate, is still the next live Colab
+run's job to confirm — the gap that remains is specifically "does this
+hold for the real model," not "does the library mechanism work at all,"
+which this check answers.
 
 ## R3 — JSON Validation Gate: `validate(raw_output) -> AuditVerdict | ValidationError`
 
