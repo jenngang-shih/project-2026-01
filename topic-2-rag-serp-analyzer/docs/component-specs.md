@@ -102,9 +102,24 @@ automated end to end once a keyword is entered.
 **Sub-functions:**
 - `extract_headings(serp_data)` — deterministic; returns `[{rank, title, h2}]`
   per result (B6).
-- `keyword_distribution(serp_data, keyword)` — deterministic; counts
-  occurrences of the keyword (and can be extended to near-variants) across
-  each result's `title`/`h2`/`snippet` fields (B7).
+- `keyword_distribution(serp_data, keyword)` — deterministic; segments the
+  keyword into its component words (jieba) and counts each segment's
+  substring occurrences across each result's `title`/`h2`/`snippet` fields,
+  reporting which segments matched (B7). **Real fix, not the original
+  design**: the original version required the full keyword as one
+  contiguous exact substring — on the real fixture (`房屋二胎利率`), that
+  gave `[1, 0, 0, 0, 0]` across the 5 competitors, even though 4 of them
+  clearly cover the same topic using natural word-order variants
+  ("二胎房貸利率" vs. "房屋二胎利率") — see `docs/live-run.md`'s
+  Limitations section for the original finding. Segmenting only the
+  keyword (not re-segmenting each haystack) and substring-matching each
+  segment against the raw text was chosen after checking that segmenting
+  both sides under-matched real compound words — jieba tokenizes "低利率"
+  as one token, so a standalone "利率" segment would never equal it via
+  token comparison, even though "利率" is plainly a substring of it. Still
+  fully deterministic and auditable — the same properties the original
+  had — just matching on the keyword's real component words instead of
+  requiring them to appear in one exact contiguous string.
 - `detect_content_gaps(serp_data, keyword)` — hybrid: deterministically
   assembles the extracted headings/snippets into the dynamic call's input,
   invokes `prompts/serp-content-gap-detection.md`, then deterministically

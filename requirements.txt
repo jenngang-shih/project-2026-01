@@ -9,6 +9,7 @@ openai>=1.40.0  # Azure OpenAI backend (topic-1 --backend azure) — uses openai
 # RAG (topic-2) — LLM/embeddings via the existing openai package (AzureOpenAI,
 # above); chromadb is the vector store (component-specs.md's C3/C4)
 chromadb>=0.5.0
+jieba>=0.42.1  # Chinese word segmentation for keyword_distribution's segmented-match fix
 
 # Local LLM (topic-3) — add local runtime client once elaboration is provided
 # e.g. ollama

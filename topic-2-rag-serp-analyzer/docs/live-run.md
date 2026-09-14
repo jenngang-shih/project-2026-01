@@ -45,7 +45,20 @@ C5 (Proposal Generator, dynamic, live Azure call)
 
 **Two real, visible limitations — worth naming rather than glossing over:**
 
-1. **`keyword_distribution` is nearly all zeros** (`serp_analysis.json`), and that's not a fluke — the deterministic counter does exact substring matching, so "二胎房貸利率" or "銀行二胎利率" in a competitor's heading don't count toward "房屋二胎利率" even though they're clearly the same topic. B7 asks the system to "identify keyword distribution across competitor content" — the current implementation technically does that, but in a way that undercounts real usage badly enough to be visibly misleading on this exact run.
+1. ~~**`keyword_distribution` is nearly all zeros**~~ — **fixed since this
+   run.** `serp_analysis.json` (above) is what the exact-substring version
+   produced: `[1, 0, 0, 0, 0]`, because "二胎房貸利率" or "銀行二胎利率" in a
+   competitor's heading didn't count toward "房屋二胎利率" even though
+   they're clearly the same topic. `keyword_distribution` now segments the
+   keyword (jieba) and substring-matches each segment instead of requiring
+   the full phrase as one contiguous string — on this exact keyword and
+   fixture, the counts become `[15, 3, 8, 6, 7]`, with `matched_segments`
+   naming which parts of the keyword each result actually covers. See
+   `docs/component-specs.md`'s run notes for the fix and why a
+   segment-both-sides approach was tried and rejected first (it under-
+   matched real compound words like "低利率"). This finding — not the
+   fixed behavior — is preserved above as an honest record of what the
+   original live run actually showed.
 2. **Retrieval hasn't actually been tested for discrimination.** With only 3 manual chunks total and `top_k=3`, every query returns all 3 regardless of relevance — the near-identical similarity scores (0.78-0.79 in `retrieved_passages.json`) reflect that, not a real ranking. This component's actual retrieval behavior won't be observable until the manual has more content than any single query needs.
 
 ## Relationship to this topic's Deliverables

@@ -37,10 +37,21 @@ class HeadingExtraction(BaseModel):
 
 class KeywordCount(BaseModel):
     """C2's deterministic keyword-distribution output, one per SERP result.
-    Source: B7."""
+    Source: B7. `count` and `matched_segments` are from segmented-keyword
+    matching (jieba), not exact-substring matching — see
+    docs/component-specs.md's run notes for why exact-substring was
+    replaced: on the real fixture, only 1 of 5 competitors ever contained
+    the keyword as one contiguous string, even though the other 4 clearly
+    cover the same topic using natural word-order variants
+    ("二胎房貸利率" vs. "房屋二胎利率")."""
 
     rank: int
     count: int
+    matched_segments: List[str] = Field(
+        default_factory=list,
+        description="Which of the keyword's segmented terms were found, for auditability — "
+        "not just the final count.",
+    )
 
 
 class ContentGap(BaseModel):
