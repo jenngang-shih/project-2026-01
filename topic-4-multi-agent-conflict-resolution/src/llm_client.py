@@ -41,8 +41,15 @@ def _require_env(names: list[str]) -> Dict[str, str]:
 
 
 class AzureOpenAILLMClient:
-    """Real backend for both agents (Planner temp 0.7, Auditor temp 0.1 —
-    see docs/component-specs.md's run notes for why they differ). One
+    """Real backend for both agents. Originally specced with different
+    temperatures per agent (Planner 0.7, Auditor 0.1 — see
+    docs/component-specs.md's run notes for the original reasoning); a
+    real live run found the deployed model (a GPT-5-class reasoning
+    deployment) rejects any non-default temperature outright
+    ("Unsupported value: 'temperature' does not support 0.7 with this
+    model. Only the default (1) value is supported."), so no
+    `temperature` parameter is sent at all — see run notes for the
+    consequence this has for the Planner/Auditor differentiation. One
     client instance is reused across both agents and every round; a fresh
     AsyncAzureOpenAI is constructed per call rather than held open across
     the whole graph run, same trade-off topics 1-2 made (simplicity over
@@ -61,9 +68,12 @@ class AzureOpenAILLMClient:
         self._deployment = vals["AZURE_OPENAI_DEPLOYMENT"]
 
     async def complete(self, prompt: str, *, component: str) -> str:
+        # `component` is unused here now (it used to select a temperature)
+        # but kept in the signature to match the LLMClient Protocol and
+        # FixtureLLMClient, which does use it to pick the right queued
+        # response.
         from openai import AsyncAzureOpenAI  # imported lazily so this module loads without the package installed
 
-        temperature = 0.7 if component == "planner" else 0.1
         client = AsyncAzureOpenAI(
             api_key=self._key,
             azure_endpoint=self._endpoint,
@@ -73,7 +83,9 @@ class AzureOpenAILLMClient:
             model=self._deployment,
             messages=[{"role": "user", "content": prompt}],
             max_completion_tokens=2048,  # not max_tokens — see topic 1's llm_client.py
-            temperature=temperature,
+            # no temperature param — see this class's docstring: this
+            # deployment only accepts the default (1), a real finding from
+            # the first live run, not assumed up front.
             response_format={"type": "json_object"},
         )
         return response.choices[0].message.content

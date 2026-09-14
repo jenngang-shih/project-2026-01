@@ -39,11 +39,20 @@ full end-to-end execution check, not just re-reading the fix by eye.
    real back-and-forth (B18 explicitly checks the final output isn't a
    one-sided concession reached in a single trivial round), still bounded.
    `[needs review]`.
-2. **Temperatures**: Planner `0.7` (revising the same brief differently
-   each round is the point — a deterministic Planner would just resubmit
-   the same rejected draft), Auditor `0.1` (compliance judgment should be
-   applied consistently round to round, not vary with sampling noise —
-   same reasoning topic 3 used for its own reviewer persona). `[needs review]`.
+2. ~~**Temperatures**: Planner `0.7`, Auditor `0.1`~~ — **superseded by a
+   real finding from the first live run**: the deployed Azure model
+   (a GPT-5-class reasoning deployment) rejects any non-default
+   temperature outright — `Error code: 400: "Unsupported value:
+   'temperature' does not support 0.7 with this model. Only the default
+   (1) value is supported."` `src/llm_client.py` now sends no
+   `temperature` parameter at all; both agents run at the model's fixed
+   default. The original reasoning (Planner should vary its revisions,
+   Auditor should judge consistently) no longer has a temperature-based
+   lever — it's still true in spirit, but not something this deployment
+   lets the code express directly. Worth naming plainly rather than
+   quietly deleting the original reasoning: this is a real platform
+   constraint discovered by running the thing, the same category of
+   finding as topic 1's `max_tokens` → `max_completion_tokens` fix.
 3. **Retry policy for transient failures (B19)**: 3 attempts per LLM call,
    waiting 1s then 2s between them, on `RateLimitError`/`APITimeoutError`/
    `APIConnectionError` specifically — not a blanket catch-and-retry-anything,
