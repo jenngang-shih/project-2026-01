@@ -14,8 +14,8 @@ budget without one.
 | Component specs + prompts (`build-topic-executables`) | ✅ `docs/component-specs.md`, `prompts/planner.md`, `prompts/auditor.md` |
 | `src/` implementation | ✅ real `langgraph.StateGraph`, async Azure OpenAI calls, retry/backoff (B19), schema-validated agent output |
 | Colab notebook | ✅ `topic4_end_to_end_colab.ipynb` — 25 cells, executed end-to-end (Fixture backend) as part of building it, not just syntax-checked |
-| Real run against Azure OpenAI | ⬜ Not started — needs you |
-| Postmortem | ⬜ Not started — write from the real run |
+| Real run against Azure OpenAI | ✅ `docs/topic4_end_to_end_colab_completed_run.ipynb` — real conflict, real rejection, real revision, converged in 2 rounds, zero schema failures |
+| Postmortem | ✅ `../docs/postmortem-topic-4.md` |
 
 ## Backend decision
 
@@ -63,9 +63,25 @@ Or step through `topic4_end_to_end_colab.ipynb` in Colab — it has a
 Fixture-backed dry run (no API key needed) before the real Azure OpenAI
 cell.
 
+## Real run result
+
+Round 0 hit B9/B10's forced conflict exactly as designed (the Planner's
+draft used both banned terms directly). Agent B rejected it with specific,
+constructive suggestions — and correctly recognized, live, that
+`Manual.txt` doesn't apply to Casino content, confirming a decision made
+earlier from static analysis alone. Agent A's round-1 revision genuinely
+addressed the feedback (reframing around verifiable process, not
+guarantees) rather than one-sidedly conceding — converged in 2 rounds, no
+schema/format failures. Full transcript:
+`docs/topic4_end_to_end_colab_completed_run.ipynb`.
+
+**Honestly untested by this run**: the `exhausted` (non-convergence) path,
+the "Manual.txt genuinely applies" direction (a mortgage-content case),
+and B19's async retry/fault-tolerance logic — all verified only by local
+Fixture tests, not a live model. See `../docs/postmortem-topic-4.md`'s
+open items.
+
 ## What's left
 
-1. Run the notebook (or `src.cli`) against real Azure OpenAI — the one
-   real live-verification step remaining.
-2. Write a postmortem from the real run's output, same convention as
-   topics 1-3.
+Nothing blocking. See `../docs/postmortem-topic-4.md`'s open items for
+optional follow-up runs that would round out the live evidence.

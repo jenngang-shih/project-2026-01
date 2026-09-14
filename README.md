@@ -56,12 +56,19 @@ cp .env.example .env  # then fill in real values; .env is gitignored
   fine-tuned on 8 held-out rows, and an Audit Report (B16) + Reflection
   (B18) written from that run's actual output — see
   `topic-3-local-llm-seo-diagnostics/README.md` for the full index.
-- **Topic 4** — built: a real `langgraph.StateGraph` (Planner/Auditor
-  negotiation loop, Azure OpenAI backend chosen over an old stale note
-  suggesting a local Llama model), `src/` implementation, and a Colab
-  notebook executed end-to-end (Fixture backend) as part of building it.
-  Real run against live Azure OpenAI still needed — see
-  `topic-4-multi-agent-conflict-resolution/README.md`.
+- **Topic 4** — built and evidence-backed: a real `langgraph.StateGraph`
+  (Planner/Auditor negotiation loop, Azure OpenAI backend chosen over an
+  old stale note suggesting a local Llama model), and a real completed run
+  (`topic-4-multi-agent-conflict-resolution/docs/
+  topic4_end_to_end_colab_completed_run.ipynb`) — B9/B10's forced conflict
+  reproduced, a genuine rejection-and-revision cycle, converged in 2
+  rounds — see `topic-4-multi-agent-conflict-resolution/README.md` for the
+  full index and `docs/postmortem-topic-4.md` for what worked, what
+  didn't, and what's still untested (the exhausted path, B19's
+  fault-tolerance logic).
 
-Build order follows `docs/architecture.md`'s suggested pipeline: Topic 1 → Topic 2 →
-Topic 3 → Topic 4.
+All four topics now have real, evidence-backed results — the postmortems
+(`docs/postmortem-topic-{1,2,3,4}.md`) are the fastest way to see what
+worked and what's reusable across them. Build order followed
+`docs/architecture.md`'s suggested pipeline: Topic 1 → Topic 2 → Topic 3 →
+Topic 4.
