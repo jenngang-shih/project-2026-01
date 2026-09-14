@@ -1,10 +1,13 @@
 # SEOFUN AI/SEO Assessment — 2026-01
 
 Four independently-runnable AI/SEO prototypes built against `docs/problem-statement.md`.
-See `docs/architecture.md` for how they relate and `prompts/project-construction-meta-prompt.md`
-for the template used to write up the final execution narrative once each topic has
-real, evidence-backed results to report — not a build plan itself; see
-`docs/postmortem-topic-1.md` for why.
+See `docs/architecture.md` for how they relate and
+[`Four-topic project execution narrative.md`](./Four-topic%20project%20execution%20narrative.md)
+for the complete cross-topic account — requirements, decisions, prompt/response
+evidence, results, and limitations for all four topics, written per
+`prompts/project-construction-meta-prompt.md`'s actual intended use (not a build
+plan; see `docs/postmortem-topic-1.md` for why) now that all four topics have
+real, evidence-backed results to report.
 
 **Repository:** https://github.com/jenngang-shih/project-2026-01
 
