@@ -182,14 +182,30 @@ present, correct nesting/types) — it does not enforce `AuditVerdict`'s
 semantic constraints (`score` in `[0, 100]`, non-empty `reasons`). R3 still
 runs on every result afterward, unchanged, to catch those.
 
-**Not yet live-verified**: everything above was verified locally as far as
-possible without a GPU — the schema builds a valid `JsonSchemaParser`, the
-notebook's torch-free cells still pass unchanged, imports are correct.
-Whether `build_transformers_prefix_allowed_tokens_fn` behaves correctly
-against the actual Llama-3-8B-Instruct tokenizer and the PEFT-wrapped,
-4-bit model on a real T4 — and whether it measurably raises the 89.6%
-compliance rate — is not yet confirmed. Same category of thing as every
-other topic-3 notebook change: the real test is the next live Colab run.
+**Found on the first live run of this change**: `ImportError: cannot import
+name 'PreTrainedTokenizerBase' from 'transformers.tokenization_utils'`,
+masked by `lm-format-enforcer`'s own broad `except ImportError` as the
+misleading "transformers is not installed." Root cause: `transformers`
+released a **major version 5** (5.17.0 at the time this was hit), which
+moved `PreTrainedTokenizerBase` out of `transformers.tokenization_utils`
+(now only in `transformers.tokenization_utils_base` or the top-level
+package). The notebook's `transformers>=4.43.0` floor had no ceiling, so a
+fresh Colab install grabbed 5.x; `lm-format-enforcer` (still at its latest
+release, 0.11.3, with no newer version fixing this) hardcodes the old
+import path. Reproduced locally by installing each version directly:
+confirmed the import fails on 5.17.0 and succeeds on 4.57.6. **Fixed** by
+capping the pip install to `transformers>=4.43.0,<5.0.0` — pinning the
+already-working dependency rather than waiting on the lagging one to
+catch up.
+
+**Still not fully live-verified**: the version-ceiling fix is confirmed
+correct (reproduced and fixed the exact ImportError locally). What remains
+unconfirmed is everything downstream that needs an actual GPU and the real
+8B model — whether `build_transformers_prefix_allowed_tokens_fn` behaves
+correctly against the real Llama-3-8B-Instruct tokenizer and the
+PEFT-wrapped, 4-bit model on a T4, and whether it measurably raises the
+89.6% compliance rate. Same category of thing as every other topic-3
+notebook change: the real test is the next live Colab run.
 
 ## R3 — JSON Validation Gate: `validate(raw_output) -> AuditVerdict | ValidationError`
 
