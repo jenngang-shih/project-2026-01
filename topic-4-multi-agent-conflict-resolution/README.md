@@ -17,6 +17,24 @@ budget without one.
 | Real run against Azure OpenAI | ✅ `docs/topic4_end_to_end_colab_completed_run.ipynb` — real conflict, real rejection, real revision, converged in 2 rounds, zero schema failures |
 | Postmortem | ✅ `../docs/postmortem-topic-4.md` |
 
+Also see [`docs/lineage.md`](docs/lineage.md) for a node-by-node walkthrough
+(problem statement → both real decisions → the graph build → both real
+live-run bugs on the actual path → the real negotiation → final state)
+suited to explaining this to someone who already knows the domain.
+
+For a non-technical audience, three companion pieces:
+- **["Show Your Work"](https://claude.ai/code/artifact/944e632f-2929-4053-8392-728bafdaeccf)**
+  (Claude Artifact, private by default — share from the page itself) — a
+  12-slide click-through walkthrough, plain conversational language, no
+  domain or technical background assumed.
+- **[`Show Your Work.pptx`](Show%20Your%20Work.pptx)** — the same 12 slides
+  as a downloadable file, opens directly in Google Slides (File → Import
+  slides) or PowerPoint/Keynote.
+- **["Prove It First"](https://claude.ai/code/artifact/0c29675d-3b0f-4831-adef-d10b1bd1b65e)**
+  (Claude Artifact) and **[`One-Pager.pdf`](One-Pager.pdf)** — a one-page
+  written summary covering the same ground, for a reader who wants a
+  leave-behind rather than a live presentation.
+
 ## Backend decision
 
 `docs/architecture.md` had a stale, pre-topic-1 note about a Llama-based
