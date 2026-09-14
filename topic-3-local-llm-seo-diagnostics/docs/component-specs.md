@@ -159,6 +159,38 @@ Renders `prompts/seo-diagnostic-audit.md` with the row's snippet/keyword/
 category, calls the model (base or fine-tuned variant, at a given
 temperature — see R4), returns the raw text completion.
 
+**Real improvement, added after the completed run (not part of the
+original live run analyzed in `docs/audit-report.md`)**: generation now
+uses **grammar-constrained decoding** via `lm-format-enforcer`, not plain
+sampling. All 5 of the real run's JSON validation failures (43/48 = 89.6%)
+were pure structural malformations — a trailing comma, unbalanced braces, a
+missing delimiter — not semantic schema violations, so constraining the
+sampler to only emit tokens that keep the output valid JSON matching
+`AuditVerdict`'s shape targets exactly what was actually observed, by
+construction, rather than by asking more firmly in the prompt.
+`outlines` (the more commonly-reached-for library for this) was tried
+first and rejected: `outlines_core` needs a Rust build toolchain to
+install from source, which failed outright in local testing and is an
+unverified risk on a fresh Colab runtime too. `lm-format-enforcer` is pure
+Python and hooks into `transformers.generate()`'s own first-class
+`prefix_allowed_tokens_fn` parameter — no special adapter needed for
+compatibility with a PEFT-wrapped, 4-bit-quantized model, since it only
+touches the standard sampling step, never the model's internals.
+
+**What this does and doesn't fix**: constrains JSON *structure* only (keys
+present, correct nesting/types) — it does not enforce `AuditVerdict`'s
+semantic constraints (`score` in `[0, 100]`, non-empty `reasons`). R3 still
+runs on every result afterward, unchanged, to catch those.
+
+**Not yet live-verified**: everything above was verified locally as far as
+possible without a GPU — the schema builds a valid `JsonSchemaParser`, the
+notebook's torch-free cells still pass unchanged, imports are correct.
+Whether `build_transformers_prefix_allowed_tokens_fn` behaves correctly
+against the actual Llama-3-8B-Instruct tokenizer and the PEFT-wrapped,
+4-bit model on a real T4 — and whether it measurably raises the 89.6%
+compliance rate — is not yet confirmed. Same category of thing as every
+other topic-3 notebook change: the real test is the next live Colab run.
+
 ## R3 — JSON Validation Gate: `validate(raw_output) -> AuditVerdict | ValidationError`
 
 **Inputs:** R2's raw text output.
