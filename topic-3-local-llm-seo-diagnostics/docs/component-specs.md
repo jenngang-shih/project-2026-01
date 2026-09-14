@@ -157,67 +157,56 @@ than aborting the whole batch — one bad row shouldn't hide the other 7.
 
 Renders `prompts/seo-diagnostic-audit.md` with the row's snippet/keyword/
 category, calls the model (base or fine-tuned variant, at a given
-temperature — see R4), returns the raw text completion.
+temperature — see R4), returns the raw text completion. Plain sampling
+(`do_sample=True`, `temperature`, `top_p=0.9`) — no grammar/schema
+-constrained decoding, after a real, reverted attempt at adding it (below).
 
-**Real improvement, added after the completed run (not part of the
-original live run analyzed in `docs/audit-report.md`)**: generation now
-uses **grammar-constrained decoding** via `lm-format-enforcer`, not plain
-sampling. All 5 of the real run's JSON validation failures (43/48 = 89.6%)
-were pure structural malformations — a trailing comma, unbalanced braces, a
-missing delimiter — not semantic schema violations, so constraining the
-sampler to only emit tokens that keep the output valid JSON matching
-`AuditVerdict`'s shape targets exactly what was actually observed, by
-construction, rather than by asking more firmly in the prompt.
-`outlines` (the more commonly-reached-for library for this) was tried
-first and rejected: `outlines_core` needs a Rust build toolchain to
-install from source, which failed outright in local testing and is an
-unverified risk on a fresh Colab runtime too. `lm-format-enforcer` is pure
-Python and hooks into `transformers.generate()`'s own first-class
-`prefix_allowed_tokens_fn` parameter — no special adapter needed for
-compatibility with a PEFT-wrapped, 4-bit-quantized model, since it only
-touches the standard sampling step, never the model's internals.
+**Tried and reverted: grammar-constrained decoding via `lm-format-enforcer`.**
+Added after the first completed run showed 89.6% (43/48) JSON structural
+validity, targeting exactly the failure mode observed (trailing commas,
+unbalanced braces — pure syntax malformations, not semantic ones). Two
+real live-run bugs were found and fixed along the way (a `transformers`
+major-version-5 incompatibility; documented in this file's git history),
+and the mechanism itself was verified locally as correctly working — but
+**the actual live run on the real model made overall JSON validity worse,
+not better: 33/48 (68.75%)**, and the regression was concentrated almost
+entirely on the **base** (untrained) model variant — 10/24 valid (41.7%),
+down sharply — while the **fine-tuned** variant actually improved to
+23/24 (95.8%).
 
-**What this does and doesn't fix**: constrains JSON *structure* only (keys
-present, correct nesting/types) — it does not enforce `AuditVerdict`'s
-semantic constraints (`score` in `[0, 100]`, non-empty `reasons`). R3 still
-runs on every result afterward, unchanged, to catch those.
+Reading the raw failed outputs directly (not just the pass/fail flag)
+showed a consistent, specific signature: generation would run correctly
+for a while, then stop mid-word — almost always inside a multi-byte
+Chinese character like "娛" (the first character of "娛樂城") — and pad
+the remaining generation budget with nothing but whitespace, never
+reaching a closing brace. Not a length/`max_new_tokens` problem (it wasn't
+running out of room early); it got stuck at that character boundary and
+filled whatever budget remained with filler. This is consistent with a
+real, specific incompatibility between `lm-format-enforcer`'s
+character-level JSON parser and multi-byte UTF-8 (Chinese) content inside
+a string value — a known class of problem for token-level constrained
+decoders built against BPE tokenizers, where a single Chinese character
+can span multiple tokens and the "allowed next token" set at that exact
+boundary can degenerate to just whitespace. Local verification never
+caught this because it was tested against English-only content (`gpt2`,
+"Respond with a JSON object") — never against the actual Chinese content
+this system handles, which is exactly where it broke.
 
-**Found on the first live run of this change**: `ImportError: cannot import
-name 'PreTrainedTokenizerBase' from 'transformers.tokenization_utils'`,
-masked by `lm-format-enforcer`'s own broad `except ImportError` as the
-misleading "transformers is not installed." Root cause: `transformers`
-released a **major version 5** (5.17.0 at the time this was hit), which
-moved `PreTrainedTokenizerBase` out of `transformers.tokenization_utils`
-(now only in `transformers.tokenization_utils_base` or the top-level
-package). The notebook's `transformers>=4.43.0` floor had no ceiling, so a
-fresh Colab install grabbed 5.x; `lm-format-enforcer` (still at its latest
-release, 0.11.3, with no newer version fixing this) hardcodes the old
-import path. Reproduced locally by installing each version directly:
-confirmed the import fails on 5.17.0 and succeeds on 4.57.6. **Fixed** by
-capping the pip install to `transformers>=4.43.0,<5.0.0` — pinning the
-already-working dependency rather than waiting on the lagging one to
-catch up.
-
-**Verified one level deeper after the fix**: with `transformers==4.57.6`
-and `torch` installed locally, the actual mechanism — not just the imports
-— was exercised directly: `build_transformers_prefix_allowed_tokens_fn`
-built successfully against a real tokenizer (`gpt2`, chosen only because
-it's ungated and small — Llama-3's is gated), and calling the returned
-function on a real prompt's first token step correctly restricted the
-allowed vocabulary to exactly whitespace and JSON-object-opening tokens
-(`{`, `{"`, ` {`, newlines) — the expected behavior for a schema-constrained
-decoder at generation step zero. This confirms the constraint logic itself
-works correctly with this library/transformers combination, not just that
-the packages import cleanly.
-
-**Still not fully live-verified**: this used a generic tokenizer, not
-Llama-3-8B-Instruct's actual one, and no PEFT/4-bit-quantized model was
-involved (that needs a real GPU). Whether the same mechanism behaves
-identically against the real tokenizer and model on a T4, and whether it
-measurably raises the 89.6% compliance rate, is still the next live Colab
-run's job to confirm — the gap that remains is specifically "does this
-hold for the real model," not "does the library mechanism work at all,"
-which this check answers.
+Because the regression would corrupt R1's base-vs-fine-tuned comparison
+(many of base's "failures" would become decoding artifacts, not genuine
+judgment-quality differences), this was reverted rather than kept —
+**decided, not silently dropped**: R2 is back to the plain-sampling
+version that produced the real 89.6% result in `docs/audit-report.md`.
+The evidence from the reverted attempt is preserved, not deleted:
+`docs/topic3_results_v2.csv`, `docs/topic3_report_v2.html`, and the
+completed-run notebook that produced them remain in the repo for
+reference, and the attempted code is recoverable from the
+`pre-result-quality-fixes` git tag's child commits
+(`7638edb`, `a6591fb`, `c2feb5e`) if this is revisited. Two real options
+for a future attempt, not pursued now: apply constrained decoding to the
+fine-tuned variant only (where it demonstrably helped) while leaving base
+on plain sampling; or fix the underlying UTF-8/CJK boundary issue itself
+before re-enabling it for both variants.
 
 ## R3 — JSON Validation Gate: `validate(raw_output) -> AuditVerdict | ValidationError`
 
